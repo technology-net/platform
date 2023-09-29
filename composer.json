@@ -2,7 +2,7 @@
     "name": "iboot/platform",
     "description": "This is a package user management",
     "type": "library",
-    "license": "ICI Technology",
+    "license": "MIT",
     "authors": [
         {
             "name": "anhcv",
