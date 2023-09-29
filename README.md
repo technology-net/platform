@@ -9,3 +9,6 @@ This is a package user management
 
 ## Publish vendor if you want
 `php artisan vendor:publish --force`
+
+## Run migration && seeder
+`php artisan migrate && php artisan db:seed --class="IBoot\Platform\Database\Seeders\UserSeeder"`  
