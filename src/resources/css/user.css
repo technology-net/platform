@@ -1,0 +1,22 @@
+.pagination {
+    margin-left: 10px;
+}
+
+.status-label {
+    border-radius: 0.25em;
+    color: #fff;
+    display: inline;
+    font-size: 75%;
+    font-weight: 500;
+    line-height: 1;
+    padding: 0.4em 0.7em 0.4em;
+    text-align: center;
+    vertical-align: baseline;
+    white-space: nowrap;
+    background-color: #659be0;
+    border: 1px solid #3a80d7!important;
+}
+
+.btn-view-user {
+    background-color: #4d97c1;
+}

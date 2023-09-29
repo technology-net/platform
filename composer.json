@@ -1,0 +1,27 @@
+{
+    "name": "iboot/platform",
+    "description": "This is a package user management",
+    "type": "library",
+    "license": "ICI Technology",
+    "authors": [
+        {
+            "name": "anhcv",
+            "email": "anhcv@icitech.net"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "IBoot\\Platform\\": "src/",
+            "IBoot\\Platform\\Database\\Seeders\\": "src/database/seeders"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "IBoot\\Platform\\UserServiceProvider"
+            ]
+        }
+    }
+}
