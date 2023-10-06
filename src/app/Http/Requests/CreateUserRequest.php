@@ -1,6 +1,6 @@
 <?php
 
-namespace IBoot\Platform\app\Requests;
+namespace IBoot\Platform\app\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -26,6 +26,7 @@ class CreateUserRequest extends FormRequest
         return [
             'username' => 'required',
             'email' => 'required|email',
+            'name' => 'required'
         ];
     }
 }

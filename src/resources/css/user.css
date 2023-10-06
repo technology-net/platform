@@ -6,9 +6,9 @@
     border-radius: 0.25em;
     color: #fff;
     display: inline;
-    font-size: 75%;
+    font-size: 13px;
     font-weight: 500;
-    line-height: 1;
+    line-height: 1.5;
     padding: 0.4em 0.7em 0.4em;
     text-align: center;
     vertical-align: baseline;
@@ -17,6 +17,24 @@
     border: 1px solid #3a80d7!important;
 }
 
-.btn-view-user {
-    background-color: #4d97c1;
+.user-checkbox {
+    width: 20px !important;
+}
+
+.user-checkbox-label {
+    margin: auto !important;
+}
+
+.btn-create-user {
+    width: 100px;
+    height: 40px;
+}
+
+#mdi-pencil-edit {
+    width: 30px;
+}
+
+.title-create-user {
+    font-size: 20px;
+    font-weight: 500;
 }

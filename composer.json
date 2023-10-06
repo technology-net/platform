@@ -1,7 +1,7 @@
 {
     "name": "iboot/platform",
-    "description": "This is a package user management",
-    "type": "library",
+    "description": "This is a platform package management",
+    "type": "package",
     "license": "MIT",
     "authors": [
         {
@@ -9,18 +9,18 @@
             "email": "anhcv@icitech.net"
         }
     ],
-    "minimum-stability": "dev",
-    "require": {},
+    "require": {
+        "iboot/core": "@dev"
+    },
     "autoload": {
         "psr-4": {
-            "IBoot\\Platform\\": "src/",
-            "IBoot\\Platform\\Database\\Seeders\\": "src/database/seeders"
+            "IBoot\\Platform\\": "src/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "IBoot\\Platform\\UserServiceProvider"
+                "IBoot\\Platform\\app\\Providers\\PlatformServiceProvider"
             ]
         }
     }

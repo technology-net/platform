@@ -2,7 +2,7 @@
 
 namespace IBoot\Platform\app\Services;
 
-use IBoot\Platform\app\Models\User;
+use IBoot\Core\app\Models\User;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
@@ -21,7 +21,7 @@ class UserService
      */
     public function getUsers(): mixed
     {
-        return $this->user->paginate(config('user.pagination'));
+        return $this->user->paginate(config('platform.user.pagination'));
     }
 
     /**
@@ -36,14 +36,16 @@ class UserService
             $this->user->create($input);
 
             return [
-                'success' => true,
+                'data' => null,
+                'status_code' => true,
                 'message' => trans('packages/platform::messages.create_success')
             ];
         } catch (Throwable $exception) {
             Log::error($exception->getMessage());
 
             return [
-                'success' => false,
+                'data' => null,
+                'status_code' => false,
                 'message' => trans('packages/platform::messages.create_fail')
             ];
         }
@@ -70,17 +72,19 @@ class UserService
     public function updateUser(int $id, array $input = []): array
     {
         try {
-            $user = $this->findUserById($id)->update($input);
+            $this->findUserById($id)->update($input);
 
             return [
-                'success' => true,
+                'data' => null,
+                'status_code' => true,
                 'message' => trans('packages/platform::messages.update_success')
             ];
         } catch (Throwable $exception) {
             Log::error($exception->getMessage());
 
             return [
-                'success' => false,
+                'data' => null,
+                'status_code' => false,
                 'message' => trans('packages/platform::messages.update_fail')
             ];
         }
@@ -95,17 +99,19 @@ class UserService
     public function deleteUser(int $id): array
     {
         try {
-            $user = $this->findUserById($id)->delete();
+            $this->findUserById($id)->delete();
 
             return [
-                'success' => true,
+                'data' => null,
+                'status_code' => true,
                 'message' => trans('packages/platform::messages.delete_success')
             ];
         } catch (Throwable $exception) {
             Log::error($exception->getMessage());
 
             return [
-                'success' => false,
+                'data' => null,
+                'status_code' => false,
                 'message' => trans('packages/platform::messages.delete_fail')
             ];
         }
