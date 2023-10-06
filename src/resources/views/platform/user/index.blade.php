@@ -10,7 +10,6 @@
 @section('js')
     <script type="text/javascript">
         let route_index = "{!! route('users.index') !!}"
-        let config_limit = "{{ config('platform.user.pagination') }}";
     </script>
     <script type="text/javascript" src="{{ mix('platform/js/user.js') }}" defer></script>
 @endsection

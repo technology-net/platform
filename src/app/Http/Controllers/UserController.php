@@ -3,7 +3,6 @@
 namespace IBoot\Platform\app\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use IBoot\Core\app\Models\User;
 use IBoot\Platform\app\Http\Requests\CreateUserRequest;
 use IBoot\Platform\app\Services\UserService;
 use Illuminate\Contracts\View\Factory;
@@ -11,7 +10,8 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class UserController extends Controller
 {
@@ -57,13 +57,15 @@ class UserController extends Controller
      */
     public function store(CreateUserRequest $request): JsonResponse
     {
-        $input = $request->validated();
-        $input['password'] = Hash::make('password');
-        $input['status'] = User::STATUS_ACTIVATED;
+        try {
+            $this->userService->newUser($request->validated());
 
-        $result = $this->userService->newUser($input);
+            return responseJson(null, true, trans('packages/platform::messages.create_success'));
+        } catch (Throwable $exception) {
+            Log::error($exception->getMessage());
 
-        return responseJson($result['data'], $result['status_code'], $result['message']);
+            return responseJson(null, false, trans('packages/platform::messages.create_fail'));
+        }
     }
 
     /**
@@ -88,9 +90,15 @@ class UserController extends Controller
      */
     public function update(CreateUserRequest $request, int $id): JsonResponse
     {
-        $result = $this->userService->updateUser($id, $request->all());
+        try {
+            $this->userService->updateUser($id, $request->all());
 
-        return responseJson($result['data'], $result['status_code'], $result['message']);
+            return responseJson(null, true, trans('packages/platform::messages.update_success'));
+        } catch (Throwable $exception) {
+            Log::error($exception->getMessage());
+
+            return responseJson(null, false, trans('packages/platform::messages.update_fail'));
+        }
     }
 
 
@@ -102,8 +110,14 @@ class UserController extends Controller
      */
     public function destroy(int $id): JsonResponse
     {
-        $result = $this->userService->deleteUser($id);
+        try {
+            $this->userService->deleteUser($id);
 
-        return responseJson($result['data'], $result['status_code'], $result['message']);
+            return responseJson(null, true, trans('packages/platform::messages.delete_success'));
+        } catch (Throwable $exception) {
+            Log::error($exception->getMessage());
+
+            return responseJson(null, false, trans('packages/platform::messages.delete_fail'));
+        }
     }
 }

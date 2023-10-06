@@ -53,8 +53,8 @@
         </tr>
         </thead>
         <tbody>
-        @foreach($users as $user)
-            <tr role="row" class="odd">
+        @foreach($users as $key => $user)
+            <tr role="row" class="odd" data-index="{{ $key+1 }}">
                 <td class="text-start no-column-visibility dtr-control pt-3">
                     <div class="text-start">
                         <div class="checkbox checkbox-primary table-checkbox">

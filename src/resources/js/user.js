@@ -78,7 +78,6 @@ $(document).ready(function () {
 
   /** Delete a user **/
   $(document).on('click', '.btn-delete-user', function() {
-    let recordsPerPage = config_limit
     let parent = $(this).parent()
     let rowIndex = $(this).closest('tr').index()
     Swal.fire({
