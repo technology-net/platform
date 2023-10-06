@@ -2,7 +2,6 @@
 
 namespace IBoot\Platform\app\Providers;
 
-use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 
 class PlatformServiceProvider extends ServiceProvider
