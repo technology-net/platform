@@ -54,7 +54,7 @@
         </thead>
         <tbody>
         @foreach($users as $key => $user)
-            <tr role="row" class="odd" data-index="{{ $key+1 }}">
+            <tr role="row" class="{{ $key % 2 === 0 ? 'odd' : 'even'}}">
                 <td class="text-start no-column-visibility dtr-control pt-3">
                     <div class="text-start">
                         <div class="checkbox checkbox-primary table-checkbox">

@@ -38,3 +38,20 @@
     font-size: 20px;
     font-weight: 500;
 }
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #F2F2F2;
+    color: #000000;
+}
+
+.table-striped tbody tr:nth-of-type(odd):hover {
+    background-color: #ffffff;
+}
+
+.table-striped tbody tr:nth-of-type(even):hover {
+    background-color: #F2F2F2;
+}
+
+.table {
+    border: 1px solid #eee4e4;
+}

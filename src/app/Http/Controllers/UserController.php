@@ -3,6 +3,7 @@
 namespace IBoot\Platform\app\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use IBoot\Platform\app\Exceptions\UserException;
 use IBoot\Platform\app\Http\Requests\CreateUserRequest;
 use IBoot\Platform\app\Services\UserService;
 use Illuminate\Contracts\View\Factory;
@@ -54,6 +55,7 @@ class UserController extends Controller
      *
      * @param CreateUserRequest $request
      * @return JsonResponse
+     * @throws UserException
      */
     public function store(CreateUserRequest $request): JsonResponse
     {
@@ -62,9 +64,7 @@ class UserController extends Controller
 
             return responseJson(null, true, trans('packages/platform::messages.create_success'));
         } catch (Throwable $exception) {
-            Log::error($exception->getMessage());
-
-            return responseJson(null, false, trans('packages/platform::messages.create_fail'));
+            throw new UserException($exception->getMessage(), trans('packages/platform::messages.create_fail'));
         }
     }
 
@@ -87,6 +87,7 @@ class UserController extends Controller
      * @param CreateUserRequest $request
      * @param int $id
      * @return JsonResponse
+     * @throws UserException
      */
     public function update(CreateUserRequest $request, int $id): JsonResponse
     {
@@ -95,9 +96,7 @@ class UserController extends Controller
 
             return responseJson(null, true, trans('packages/platform::messages.update_success'));
         } catch (Throwable $exception) {
-            Log::error($exception->getMessage());
-
-            return responseJson(null, false, trans('packages/platform::messages.update_fail'));
+            throw new UserException($exception->getMessage(), trans('packages/platform::messages.update_fail'));
         }
     }
 
@@ -107,6 +106,7 @@ class UserController extends Controller
      *
      * @param int $id
      * @return JsonResponse
+     * @throws UserException
      */
     public function destroy(int $id): JsonResponse
     {
@@ -115,9 +115,7 @@ class UserController extends Controller
 
             return responseJson(null, true, trans('packages/platform::messages.delete_success'));
         } catch (Throwable $exception) {
-            Log::error($exception->getMessage());
-
-            return responseJson(null, false, trans('packages/platform::messages.delete_fail'));
+            throw new UserException($exception->getMessage(), trans('packages/platform::messages.delete_fail'));
         }
     }
 }

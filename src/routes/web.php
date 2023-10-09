@@ -1,5 +1,6 @@
 <?php
 
+use IBoot\Core\app\Http\Middleware\Authenticate;
 use Illuminate\Support\Facades\Route;
 
 Route::group([
@@ -7,5 +8,5 @@ Route::group([
     'prefix'=>'admin',
     'middleware' => 'web'
 ], function () {
-    Route::resource('users', 'UserController')->except(['show']);
+    Route::resource('users', 'UserController')->except(['show'])->middleware(Authenticate::class);;
 });
