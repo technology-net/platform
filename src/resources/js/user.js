@@ -24,10 +24,14 @@ $(document).ready(function () {
       },
       error: function (jQxhr, textStatus, errorThrown) {
         if (jQxhr.status === 422) {
-          let errors = jQxhr.responseJSON.errors
+          let errors = jQxhr["responseJSON"].errors
           for (let [key, value] of Object.entries(errors)) {
             showError(key, value[0])
           }
+        }
+        console.log(jQxhr)
+        if (jQxhr.status === 500) {
+          toastr.error(jQxhr['responseJSON'].message)
         }
       }
     })
@@ -67,10 +71,14 @@ $(document).ready(function () {
       },
       error: function (jQxhr, textStatus, errorThrown) {
         if (jQxhr.status === 422) {
-          let errors = jQxhr.responseJSON.errors
+          let errors = jQxhr["responseJSON"].errors
           for (let [key, value] of Object.entries(errors)) {
             showError(key, value[0])
           }
+        }
+
+        if (jQxhr.status === 500) {
+          toastr.error(jQxhr['responseJSON'].message)
         }
       }
     })
@@ -112,8 +120,8 @@ $(document).ready(function () {
             }
           },
           error: function (jQxhr, textStatus, errorThrown) {
-            if (jQxhr.status === 422) {
-              toastr.error(jQxhr.responseJSON.message)
+            if (jQxhr.status === 422 || jQxhr.status === 500) {
+              toastr.error(jQxhr["responseJSON"].message)
             }
           }
         })

@@ -3,7 +3,7 @@
 namespace IBoot\Platform\app\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use IBoot\Platform\app\Exceptions\UserException;
+use IBoot\Core\app\Exceptions\ServerErrorException;
 use IBoot\Platform\app\Http\Requests\CreateUserRequest;
 use IBoot\Platform\app\Services\UserService;
 use Illuminate\Contracts\View\Factory;
@@ -12,6 +12,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use MongoDB\Driver\Exception\ServerException;
 use Throwable;
 
 class UserController extends Controller
@@ -55,17 +56,16 @@ class UserController extends Controller
      *
      * @param CreateUserRequest $request
      * @return JsonResponse
-     * @throws UserException
+     * @throws ServerErrorException
      */
     public function store(CreateUserRequest $request): JsonResponse
     {
-        try {
-            $this->userService->newUser($request->validated());
-
-            return responseJson(null, true, trans('packages/platform::messages.create_success'));
-        } catch (Throwable $exception) {
-            throw new UserException($exception->getMessage(), trans('packages/platform::messages.create_fail'));
+        $user = $this->userService->newUser($request->validated());
+        if (!$user) {
+            throw new ServerErrorException(null, trans('packages/platform::messages.create_fail'));
         }
+
+        return responseSuccess(null, trans('packages/platform::messages.create_success'));
     }
 
     /**
@@ -87,17 +87,16 @@ class UserController extends Controller
      * @param CreateUserRequest $request
      * @param int $id
      * @return JsonResponse
-     * @throws UserException
+     * @throws ServerErrorException
      */
     public function update(CreateUserRequest $request, int $id): JsonResponse
     {
-        try {
-            $this->userService->updateUser($id, $request->all());
-
-            return responseJson(null, true, trans('packages/platform::messages.update_success'));
-        } catch (Throwable $exception) {
-            throw new UserException($exception->getMessage(), trans('packages/platform::messages.update_fail'));
+        $user = $this->userService->updateUser($id, $request->all());
+        if (!$user) {
+            throw new ServerErrorException(null, trans('packages/platform::messages.delete_fail'));
         }
+
+        return responseSuccess(null, trans('packages/platform::messages.update_success'));
     }
 
 
@@ -106,16 +105,15 @@ class UserController extends Controller
      *
      * @param int $id
      * @return JsonResponse
-     * @throws UserException
+     * @throws ServerErrorException
      */
     public function destroy(int $id): JsonResponse
     {
-        try {
-            $this->userService->deleteUser($id);
-
-            return responseJson(null, true, trans('packages/platform::messages.delete_success'));
-        } catch (Throwable $exception) {
-            throw new UserException($exception->getMessage(), trans('packages/platform::messages.delete_fail'));
+        $user = $this->userService->deleteUser($id);
+        if (!$user) {
+            throw new ServerErrorException(null, trans('packages/platform::messages.delete_fail'));
         }
+
+        return responseSuccess(null, trans('packages/platform::messages.delete_success'));
     }
 }
