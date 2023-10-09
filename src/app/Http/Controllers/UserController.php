@@ -3,17 +3,14 @@
 namespace IBoot\Platform\app\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use IBoot\Platform\app\Requests\CreateUserRequest;
+use IBoot\Core\app\Exceptions\ServerErrorException;
+use IBoot\Platform\app\Http\Requests\CreateUserRequest;
 use IBoot\Platform\app\Services\UserService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use IBoot\Platform\app\Models\User;
-use Illuminate\Support\Facades\Log;
-use Throwable;
 
 class UserController extends Controller
 {
@@ -27,13 +24,18 @@ class UserController extends Controller
     /**
      * Get user list
      *
-     * @return View
+     * @param Request $request
+     * @return View|string
      */
-    public function index(): View
+    public function index(Request $request): View|string
     {
         $users = $this->userService->getUsers();
 
-        return view('packages/platform::index', ['users' => $users]);
+        if ($request->ajax()) {
+            return view('packages/platform::platform.user.user_table', ['users' => $users])->render();
+        }
+
+        return view('packages/platform::platform.user.index', ['users' => $users]);
     }
 
     /**
@@ -43,7 +45,7 @@ class UserController extends Controller
      */
     public function create(): View
     {
-        return view('packages/platform::create');
+        return view('packages/platform::platform.user.create');
     }
 
     /**
@@ -51,16 +53,16 @@ class UserController extends Controller
      *
      * @param CreateUserRequest $request
      * @return JsonResponse
+     * @throws ServerErrorException
      */
     public function store(CreateUserRequest $request): JsonResponse
     {
-        $input = $request->validated();
-        $input['password'] = Hash::make('password');
-        $input['status'] = User::ACTIVATED;
+        $user = $this->userService->newUser($request->validated());
+        if (!$user) {
+            throw new ServerErrorException(null, trans('packages/platform::messages.create_fail'));
+        }
 
-        $user = $this->userService->newUser($input);
-
-        return response()->json($user);
+        return responseSuccess(null, trans('packages/platform::messages.create_success'));
     }
 
     /**
@@ -73,7 +75,7 @@ class UserController extends Controller
     {
         $user = $this->userService->showUser($id);
 
-        return view('packages/platform::detail', ['user' => $user]);
+        return view('packages/platform::platform.user.detail', ['user' => $user]);
     }
 
     /**
@@ -82,12 +84,16 @@ class UserController extends Controller
      * @param CreateUserRequest $request
      * @param int $id
      * @return JsonResponse
+     * @throws ServerErrorException
      */
     public function update(CreateUserRequest $request, int $id): JsonResponse
     {
         $user = $this->userService->updateUser($id, $request->all());
+        if (!$user) {
+            throw new ServerErrorException(null, trans('packages/platform::messages.delete_fail'));
+        }
 
-        return response()->json($user);
+        return responseSuccess(null, trans('packages/platform::messages.update_success'));
     }
 
 
@@ -96,11 +102,15 @@ class UserController extends Controller
      *
      * @param int $id
      * @return JsonResponse
+     * @throws ServerErrorException
      */
     public function destroy(int $id): JsonResponse
     {
         $user = $this->userService->deleteUser($id);
+        if (!$user) {
+            throw new ServerErrorException(null, trans('packages/platform::messages.delete_fail'));
+        }
 
-        return response()->json($user);
+        return responseSuccess(null, trans('packages/platform::messages.delete_success'));
     }
 }

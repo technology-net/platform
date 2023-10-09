@@ -1,6 +1,6 @@
 $(document).ready(function () {
   /** Create a user **/
-  $('#submitFormUser').submit(function (e) {
+  $(document).on('submit', '#submitFormUser',function (e) {
     e.preventDefault()
     let form = $(this)
     let url = form.attr('action')
@@ -24,17 +24,30 @@ $(document).ready(function () {
       },
       error: function (jQxhr, textStatus, errorThrown) {
         if (jQxhr.status === 422) {
-          let errors = jQxhr.responseJSON.errors
+          let errors = jQxhr["responseJSON"].errors
           for (let [key, value] of Object.entries(errors)) {
             showError(key, value[0])
           }
+        }
+        console.log(jQxhr)
+        if (jQxhr.status === 500) {
+          toastr.error(jQxhr['responseJSON'].message)
         }
       }
     })
   })
 
+  let page
+
+  $(document).on('click', '.pagination a', function(event) {
+    event.preventDefault()
+    page = $(this).attr('href').split('page=')[1]
+
+    getMoreUsers(page)
+  })
+
   /** Update a user **/
-  $("#updateFormUser").submit(function (e) {
+  $(document).on('submit', '#updateFormUser', function (e) {
     e.preventDefault()
     let form = $(this)
     let url = form.attr('action')
@@ -58,18 +71,23 @@ $(document).ready(function () {
       },
       error: function (jQxhr, textStatus, errorThrown) {
         if (jQxhr.status === 422) {
-          let errors = jQxhr.responseJSON.errors
+          let errors = jQxhr["responseJSON"].errors
           for (let [key, value] of Object.entries(errors)) {
             showError(key, value[0])
           }
+        }
+
+        if (jQxhr.status === 500) {
+          toastr.error(jQxhr['responseJSON'].message)
         }
       }
     })
   })
 
   /** Delete a user **/
-  $('.btn-delete-user').on('click', function() {
+  $(document).on('click', '.btn-delete-user', function() {
     let parent = $(this).parent()
+    let rowIndex = $(this).closest('tr').index()
     Swal.fire({
       title: 'Delete this user',
       text: 'Are you sure you want to delete this user?',
@@ -90,14 +108,20 @@ $(document).ready(function () {
           success: function (response) {
             if (response.success) {
               toastr.success(response.message)
-              parent.closest('tr').remove();
+              if (rowIndex === 0 && page !== 1) {
+                parent.closest('tr').remove()
+                page--
+                getMoreUsers(page)
+              } else {
+                parent.closest('tr').remove()
+              }
             } else {
               toastr.error(response.message)
             }
           },
           error: function (jQxhr, textStatus, errorThrown) {
-            if (jQxhr.status === 422) {
-              toastr.error(jQxhr.responseJSON.message)
+            if (jQxhr.status === 422 || jQxhr.status === 500) {
+              toastr.error(jQxhr["responseJSON"].message)
             }
           }
         })
@@ -106,4 +130,14 @@ $(document).ready(function () {
       }
     })
   })
+
+  function getMoreUsers(page) {
+    $.ajax({
+      type: "GET",
+      url: route_index + "?page=" + page,
+      success:function(data) {
+        $('#user-table').html(data)
+      }
+    })
+  }
 })

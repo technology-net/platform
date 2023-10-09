@@ -2,7 +2,8 @@
 
 namespace IBoot\Platform\app\Services;
 
-use IBoot\Platform\app\Models\User;
+use IBoot\Core\app\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
@@ -21,32 +22,21 @@ class UserService
      */
     public function getUsers(): mixed
     {
-        return $this->user->paginate(config('user.pagination'));
+        return $this->user->orderBy('created_at', 'desc')->paginate(config('platform.user.pagination'));
     }
 
     /**
      * Create a new user
      *
      * @param array $input
-     * @return array
+     * @return mixed
      */
-    public function newUser(array $input = []): array
+    public function newUser(array $input = []): mixed
     {
-        try {
-            $this->user->create($input);
+        $input['password'] = Hash::make('password');
+        $input['status'] = User::STATUS_ACTIVATED;
 
-            return [
-                'success' => true,
-                'message' => trans('packages/platform::messages.create_success')
-            ];
-        } catch (Throwable $exception) {
-            Log::error($exception->getMessage());
-
-            return [
-                'success' => false,
-                'message' => trans('packages/platform::messages.create_fail')
-            ];
-        }
+        return $this->user->create($input);
     }
 
     /**
@@ -63,52 +53,24 @@ class UserService
     /**
      * Update a user
      *
-     * @param array $input
      * @param int $id
-     * @return array
+     * @param array $input
+     * @return mixed
      */
-    public function updateUser(int $id, array $input = []): array
+    public function updateUser(int $id, array $input = []): mixed
     {
-        try {
-            $user = $this->findUserById($id)->update($input);
-
-            return [
-                'success' => true,
-                'message' => trans('packages/platform::messages.update_success')
-            ];
-        } catch (Throwable $exception) {
-            Log::error($exception->getMessage());
-
-            return [
-                'success' => false,
-                'message' => trans('packages/platform::messages.update_fail')
-            ];
-        }
+        return $this->findUserById($id)->update($input);
     }
 
     /**
      * Delete a user
      *
      * @param int $id
-     * @return array
+     * @return mixed
      */
-    public function deleteUser(int $id): array
+    public function deleteUser(int $id): mixed
     {
-        try {
-            $user = $this->findUserById($id)->delete();
-
-            return [
-                'success' => true,
-                'message' => trans('packages/platform::messages.delete_success')
-            ];
-        } catch (Throwable $exception) {
-            Log::error($exception->getMessage());
-
-            return [
-                'success' => false,
-                'message' => trans('packages/platform::messages.delete_fail')
-            ];
-        }
+        return $this->findUserById($id)->delete();
     }
 
     /**
