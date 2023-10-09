@@ -11,9 +11,6 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use MongoDB\Driver\Exception\ServerException;
-use Throwable;
 
 class UserController extends Controller
 {
